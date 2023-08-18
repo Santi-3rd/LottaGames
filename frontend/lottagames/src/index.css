@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+html {
+  background-color:  #7390be;
+  background-image: linear-gradient(to right, #2e4a79 0%, #32589b 50%, #2e4a79 100%);
+  font-size: 3vmin;
+  color: rgb(236, 235, 234);
+}
