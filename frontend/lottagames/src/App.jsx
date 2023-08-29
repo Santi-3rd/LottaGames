@@ -1,24 +1,24 @@
 import { useEffect, useState} from "react";
 import "./App.css";
 import { Link, Outlet, useNavigate} from "react-router-dom";
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 import { api } from "./utilities.jsx";
 
 export const userContext = createContext();
 
 function App() {
   const [user, setUser] = useState(null);
-  const navigate = useNavigate()
+  const [games, setGames] = useState([]);
+  const navigate = useNavigate();
 
 const whoAmI = async() => {
-  console.log("Attempting to retrieve token from localStorage...");
   let token = localStorage.getItem("token") 
   console.log("Retrieved token:", token);
   if (token){
     api.defaults.headers.common["Authorization"] = `Token ${token}`
     let response = await api.get("users/")
     setUser(response.data)
-    navigate("/home")
+    // navigate("/home")
   }
   else {
     setUser(null)
@@ -31,9 +31,7 @@ useEffect(()=>{
 }, [])
 
 const logOut = async() => {
-  console.log("Attempting to remove token from localStorage...");
   let response = await api.post("users/logout/")
-  console.log("Removed token:", token);
   if(response.status === 204){
     localStorage.removeItem("token")
     setUser(null)
@@ -50,7 +48,7 @@ const logOut = async() => {
             user
             ?
             <>
-            <Link to="/home">Home</Link>
+            <Link to="/profile">Home</Link>
             <Link to="/library">Library</Link>
             <button onClick={logOut}>Log out</button>
             </>
@@ -62,7 +60,7 @@ const logOut = async() => {
           }
         </nav>
       </header>
-      <userContext.Provider value={{ user, setUser }}>
+      <userContext.Provider value={{ user, setUser, games, setGames }}>
         <Outlet />
       </userContext.Provider>
     </div>

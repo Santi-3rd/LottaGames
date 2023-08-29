@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { userContext } from "../App";
 import { useNavigate } from "react-router-dom";
 import { api } from "../utilities.jsx";
@@ -23,13 +23,12 @@ export const LoginPage = () => {
     setUser(user);
     localStorage.setItem("token", token);
     api.defaults.headers.common["Authorization"] = `Token ${token}`
-    navigate("/home"); 
+    navigate("/library"); 
   };
 
 
-
   return (
-    <form className="flex flex-col justify-center items-center gap-2" onSubmit={(e) => logIn(e)}>
+    <form className="h-screen flex flex-col justify-center items-center gap-2" onSubmit={(e) => logIn(e)}>
       <h5>Log In</h5>
       <input className="border-[4px] border-x-black border-y-black text-black"
         type="email"

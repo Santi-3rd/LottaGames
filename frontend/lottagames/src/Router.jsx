@@ -1,8 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
-import { HomePage } from "./pages/HomePage"
+import { ProfilePage } from "./pages/ProfilePage"
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { Library } from "./pages/LibraryPage";
+import { Games } from "./pages/GamePage";
 import App from "./App";
 
 
@@ -20,13 +21,17 @@ export const router = createBrowserRouter([
                 element: <LoginPage/>,
             },
             {
-                path: "home",
-                element:<HomePage/>,
+                path: "profile",
+                element:<ProfilePage/>,
             },
             {
                 path:"library",
-                element: <Library />
-            }
+                element: <Library />,
+            },
+            {
+                path: "games/:gameId",
+                element: <Games />,
+            },
         ],
     },
 ]);
