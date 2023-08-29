@@ -30,8 +30,8 @@ export const RegisterPage = () => {
     navigate("/home");
   };
 
-  return (
-    <form className="flex flex-col justify-center items-center gap-2" onSubmit={(e) => signUp(e)}>
+  return ( 
+    <form className="h-screen flex flex-col justify-center items-center gap-2" onSubmit={(e) => signUp(e)}>
       <h5>Sign Up</h5>
       <input className="border-[4px] border-x-black border-y-black text-black"
         type="email"
@@ -40,7 +40,8 @@ export const RegisterPage = () => {
         placeholder="email"
       />
       <input className="border-[4px] border-x-black border-y-black text-black"
-        type="text"
+        // user name
+        type="text"  
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="User Name"
