@@ -18,7 +18,7 @@ const whoAmI = async() => {
     api.defaults.headers.common["Authorization"] = `Token ${token}`
     let response = await api.get("users/")
     setUser(response.data)
-    // navigate("/home")
+    navigate("/library")
   }
   else {
     setUser(null)
@@ -48,7 +48,7 @@ const logOut = async() => {
             user
             ?
             <>
-            <Link to="/profile">Home</Link>
+            <Link to="/profile">Profile</Link>
             <Link to="/library">Library</Link>
             <button onClick={logOut}>Log out</button>
             </>

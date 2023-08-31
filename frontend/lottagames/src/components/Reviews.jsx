@@ -13,7 +13,7 @@ export const Reviews = () => {
 
   return (
     <div className="mt-4">
-      <h2 className="text-xl font-semibold mb-2">User Reviews</h2>
+      <h2 className="text-xl font-semibold mb-2">Review</h2>
       <div className="space-y-2">
         {reviews.map((review, index) => (
           <div key={index} className="bg-gray-100 p-2 rounded">
