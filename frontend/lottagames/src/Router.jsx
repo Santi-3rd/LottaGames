@@ -4,6 +4,7 @@ import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { Library } from "./pages/LibraryPage";
 import { Games } from "./pages/GamePage";
+import { AddGame } from "./pages/AddGamePage";
 import App from "./App";
 
 
@@ -31,6 +32,10 @@ export const router = createBrowserRouter([
             {
                 path: "games/:gameId",
                 element: <Games />,
+            },
+            {
+                path: "addgame/:gameId",
+                element: <AddGame />,
             },
         ],
     },

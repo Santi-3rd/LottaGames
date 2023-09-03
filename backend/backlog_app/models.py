@@ -4,4 +4,4 @@ from user_app.models import App_user
 
 class Backlog(models.Model):
     app_user = models.ForeignKey(App_user, on_delete=models.CASCADE, related_name="backlog")
-    game = models.IntegerField()
+    game = models.IntegerField(primary_key=True)

@@ -22,5 +22,6 @@ urlpatterns = [
     path("api/users/", include("user_app.urls")),
     path("api/v1/library/", include("api_app.urls")),
     path("api/v1/games/", include("game_app.urls")),
-    path("api/v1/add_to_backlog/", include("backlog_app.urls")),
+    path("api/v1/backlog/", include("backlog_app.urls")),
+    path("api/v1/collection/", include("collections_app.urls")),
 ]
