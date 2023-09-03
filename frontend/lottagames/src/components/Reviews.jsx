@@ -13,7 +13,7 @@ export const Reviews = () => {
 
   return (
     <div className="mt-4">
-      <h2 className="text-xl font-semibold mb-2">Review</h2>
+      <h2 className="text-xl font-semibold mb-2">Write a Review</h2>
       <div className="space-y-2">
         {reviews.map((review, index) => (
           <div key={index} className="bg-gray-100 p-2 rounded">
@@ -29,12 +29,6 @@ export const Reviews = () => {
           value={reviewText}
           onChange={(e) => setReviewText(e.target.value)}
         ></textarea>
-        <button
-          className="mt-2 bg-blue-500 text-white px-4 py-2 rounded"
-          onClick={handleReviewSubmit}
-        >
-          Submit Review
-        </button>
       </div>
     </div>
   );

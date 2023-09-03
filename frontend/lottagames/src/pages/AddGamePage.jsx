@@ -1,4 +1,4 @@
-import { useParams,} from "react-router-dom";
+import { useParams, useNavigate} from "react-router-dom";
 import {useContext, useEffect, useState } from "react";
 import { api } from "../utilities.jsx"
 import { userContext } from "../App";
@@ -7,34 +7,79 @@ import { Reviews } from "../components/Reviews.jsx";
 export const AddGame = () => {
     const { gameId } = useParams();
     const { games, setGames } = useContext(userContext);
+    const [isGameInBacklog, setIsGameInBacklog] = useState(null);
     const [isGameInCollection, setIsGameInCollection] = useState(null);
-    const [selectedStatus, setSelectedStatus] = useState(null); // State to track the selected status
+    const [selectedStatus, setSelectedStatus] = useState("currently_playing"); // State to track the selected status
+    const navigate = useNavigate();
 
-    console.log(selectedStatus)
+//pings api for all the game info the user needs
+useEffect(() => {        
+  const fetchData = async () => {
 
-  const handleStatusChange = (status) => {
-    setSelectedStatus(status);
+    try {
+      const response = await api.post("v1/games/", { idQuery: gameId });
+      setGames(response.data.games);
+
+      const collection_response = await api.get("v1/collection/");
+      console.log(collection_response.data)
+
+      //checks if the gameId is within the collections's data
+      const isGameInCollection = collection_response.data.some(item => parseInt(item.game) === parseInt(gameId));
+      setIsGameInCollection(isGameInCollection);
+
+    } catch (error) {
+      console.error(error);
+    }
   };
+
+  fetchData();
+}, [gameId]);
+
+const handleStatusChange = (status) => {
+  setSelectedStatus(status);
+};
 
   const handleSubmit = async () => {
         try {
-          if (isGameInCollection) {
-            await api.delete(`v1/collection/remove/`, { game_id: gameId });
-          } else {
-            await api.post("v1/collection/add/", { gameStatus: selectedStatus});
-          }
+            await api.post("v1/collection/add/", { game_id: gameId, gameStatus: selectedStatus});
+
+            //Checks if the game is in the backlog
+            const backlog_response = await api.get("v1/backlog/");
+            const isGameInBacklog = backlog_response.data.some(item => parseInt(item.game) === parseInt(gameId));
+            setIsGameInBacklog(isGameInBacklog);
+
+            //Removes the game if it's in the backlog
+            if (isGameInBacklog) {
+              await api.delete(`v1/backlog/remove/${gameId}/`, { game_id: gameId });
+              setIsGameInBacklog(!isGameInBacklog);
+            }
+
+            //Updates the game's status
+            if (isGameInCollection) {
+              await api.put(`v1/collection/update/${gameId}/`, { gameStatus: selectedStatus });
+              setIsGameInBacklog(isGameInBacklog)
+            }
       
           // Update the state after the action
-          setIsGameInCollection(!isGameInCollection);
+          // setIsGameInCollection(!isGameInCollection);
       
-          
         } catch (error) {
           console.error(error);
         }
   };
 
+  const handleRemove = async () => {
+    try {
+        await api.delete(`v1/collection/remove/${gameId}/`, { game_id: gameId });
+  
+      // Update the state after the action
+      setIsGameInCollection(!isGameInCollection);
+  
+    } catch (error) {
+      console.error(error);
+    }
 
-
+  }
 
 
 return (
@@ -43,53 +88,33 @@ return (
         <h1>{games[0].name}</h1>
 
         <img src={games[0].cover?.url} alt={games.name}/>
-        <div>
-        <label>
-          <input
-            type="radio"
-            name="status"
-            value="currently_playing"
-            checked={selectedStatus === "currently_playing"}
-            onChange={() => handleStatusChange("currently_playing")}
-          />
-          Currently Playing
-        </label>
-
-        <label>
-          <input
-            type="radio"
-            name="status"
-            value="beaten"
-            checked={selectedStatus === "beaten"}
-            onChange={() => handleStatusChange("beaten")}
-          />
-          Beaten
-        </label>
-
-        <label>
-          <input
-            type="radio"
-            name="status"
-            value="completed"
-            checked={selectedStatus === "completed"}
-            onChange={() => handleStatusChange("completed")}
-          />
-          Completed
-        </label>
-
-        <label>
-          <input
-            type="radio"
-            name="status"
-            value="dropped"
-            checked={selectedStatus === "dropped"}
-            onChange={() => handleStatusChange("dropped")}
-          />
-          Dropped
-        </label>
-        </div>
-        <button className="bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold py-1 px-1 rounded focus:outline-none focus:ring focus:border-blue-300" onClick={handleSubmit}>{isGameInCollection ? "Remove" : "Submit"}</button>
-        {/* <Reviews/> */}
-    </div>
+        <select className="text-black"
+            value={selectedStatus}
+            onChange={(e) => handleStatusChange(e.target.value)}
+          >
+            <option value="currently_playing">Currently Playing</option>
+            <option value="beaten">Beaten</option>
+            <option value="completed">Completed</option>
+            <option value="dropped">Dropped</option>
+          </select>
+        <Reviews/>
+          <button
+          className="bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold py-1 px-1 rounded focus:outline-none focus:ring focus:border-blue-300"
+          onClick={() => {
+            handleSubmit();
+            navigate(`/games/${gameId}`);
+          }}
+        >
+          Submit
+          </button>
+            {isGameInCollection && (
+              <button
+            className="bg-red-500 hover:bg-red-600 text-white text-sm font-semibold py-1 px-1 rounded focus:outline-none focus:ring focus:border-blue-300"
+            onClick={handleRemove}
+          >
+            Remove
+              </button>
+    )}
+  </div>
     )
 }

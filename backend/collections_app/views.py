@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT
+from rest_framework.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_200_OK, HTTP_404_NOT_FOUND
 from .models import Collection
 from .serializers import CollectionSerializer
 import requests
@@ -62,21 +62,42 @@ class Collection_Management(User_permissions):
 
     def post(self, request):
         request.data["app_user"] = request.user
-        print(request.data)
 
         game_id = request.data.get("game_id")
+        game_status = request.data.get("gameStatus")
+        # print(game_status)
+        collection_game = Collection(app_user=request.user, game=game_id, game_status=game_status)
 
-        collection_game = Collection(app_user=request.user, game=game_id)
+        # if collection_game.set_status(game_status):
         collection_game.save()
 
         new_collection_game = CollectionSerializer(collection_game)
-        
         return Response(new_collection_game.data, status=HTTP_201_CREATED)
     
     def get(self, request):
         collection_games = Collection.objects.filter(app_user=request.user)
         games_data = CollectionSerializer(collection_games, many=True).data
         return Response(games_data)
+    
+    def put(self, request, game):
+        try:
+            # Retrieve the existing record from the database
+            collection_game = Collection.objects.get(game=game, app_user=request.user)
+            print(collection_game)
+
+            # Update the game_status field
+            game_status = request.data.get("gameStatus")
+            collection_game.game_status = game_status
+
+            # Save the changes
+            collection_game.save()
+
+            # Serialize and return the updated game
+            updated_game = CollectionSerializer(collection_game)
+            return Response(updated_game.data, HTTP_200_OK)
+
+        except Collection.DoesNotExist:
+            return Response({"detail": "Game not found"}, HTTP_404_NOT_FOUND)
     
     def delete(self, request, game):
 

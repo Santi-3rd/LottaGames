@@ -6,7 +6,6 @@ export const ListedGame = ({ game }) => {
   const navigate = useNavigate();
   const { id, cover, name } = game;
 
-    
 
   return (
     <div

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { userContext } from "../App";
 import { useNavigate } from "react-router-dom";
 import { api } from "../utilities.jsx";
@@ -6,6 +6,7 @@ import { ListedGame } from "../components/ListedGame";
 
 export const ProfilePage = () => {
   const { user, setUser, games, setGames } = useContext(userContext);
+  const [filteredGames, setFilteredGames] = useState(null)
   const navigate = useNavigate();
   
   const whoAmI = async() => {
@@ -23,10 +24,45 @@ export const ProfilePage = () => {
   }
 
   useEffect(() => {
-    
+    // Fetch data from the API
+    api.get('v1/collection/')
+      .then(response => {
+        // Filter the games that have game_status as 'currently_playing'
+        const filteredGames = response.data.filter(item => item.game_status === 'currently_playing');
+        setFilteredGames(filteredGames); // Update the filteredGames state
+        console.log(filteredGames);
+  
+        // Fetch additional data for each game using a loop
+        const gamePromises = filteredGames.map(game => {
+          const gameId = game.game;
+          return api.post("v1/collection/view/", { idQuery: gameId })
+            .then(igdb_response => {
+              return igdb_response.data;
+            })
+            .catch(error => {
+              console.error(`Error fetching data for Game ID ${gameId}:`, error);
+            });
+        });
+  
+        // Use Promise.all to wait for all game data requests to complete
+        Promise.all(gamePromises)
+          .then(gameDataArray => {
+            // Flatten the array of game data objects
+            const allGamesData = gameDataArray.flatMap(gameData => gameData.games);
+            setGames(allGamesData); // Update the games state with additional data
+          })
+          .catch(error => {
+            console.error('Error fetching game data:', error);
+          });
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  
     whoAmI();
   }, []);
 
+  //SHOWS BACKLOG
   const showBacklog = async () => {
     try {
       const backlog_response = await api.get("v1/backlog/");
@@ -48,6 +84,50 @@ export const ProfilePage = () => {
     }
   };
 
+  //SHOWS COLLECTION
+  const showCollection = async () => {
+    try {
+      const collection_response = await api.get("v1/collection/");
+  
+      const gamePromises = collection_response.data.map(async (collectionItem) => {
+        const gameId = collectionItem.game;
+        const igdb_response = await api.post("v1/collection/view/", { idQuery: gameId });
+        return igdb_response.data;
+      });
+  
+      const gameDataArray = await Promise.all(gamePromises);
+  
+      // Flatten the array of game data objects
+      const allGamesData = gameDataArray.flatMap((gameData) => gameData.games);
+  
+      setGames(allGamesData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const showCurrentlyPlaying = async (filteredGames) => {
+    try {
+      const gamePromises = filteredGames.map(async (game) => {
+        const gameId = game.game;
+        const igdb_response = await api.post("v1/collection/view/", { idQuery: gameId });
+        return igdb_response.data;
+      });
+
+      const gameDataArray = await Promise.all(gamePromises);
+
+      // Flatten the array of game data objects
+      const allGamesData = gameDataArray.flatMap((gameData) => gameData.games);
+
+      setGames(allGamesData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
+
+
   return (
     <div className="flex flex-col items-center">
       <div className="flex items-center mt-8">
@@ -64,13 +144,13 @@ export const ProfilePage = () => {
       </div>
       <div className="bg-gray-800 w-full flex justify-center mt-8 space-x-4 bg">
         <p className="hover:underline cursor-pointer">
-          <span>Collection</span>
+          <span onClick={showCollection}>Collection</span>
+        </p>
+        <p className="hover:underline cursor-pointer">
+        <span onClick={() => showCurrentlyPlaying(filteredGames)}>Currently Playing</span>
         </p>
         <p className="hover:underline cursor-pointer">
           <span onClick={showBacklog}>Backlog</span>
-        </p>
-        <p className="hover:underline cursor-pointer">
-          <span>Currently Playing</span>
         </p>
       </div>
       <div className="flex flex-col space-y-4 mt-3">

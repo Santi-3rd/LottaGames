@@ -6,4 +6,5 @@ urlpatterns = [
     path('', Collection_Management.as_view(), name='show_collection'),
     path('add/', Collection_Management.as_view(), name='add_to_collection'),
     path('remove/<int:game>/', Collection_Management.as_view(), name='remove_from_collection'),
+    path('update/<int:game>/', Collection_Management.as_view(), name='update_collection'),
 ]
