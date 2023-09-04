@@ -1,36 +1,21 @@
-import React, { useState } from "react";
+// import React, { useState } from "react";
 
-export const Reviews = () => {
-  const [reviewText, setReviewText] = useState("");
-  const [reviews, setReviews] = useState([]);
+// export const Reviews = ({ handleSubmit }) => {
+//   const [reviewText, setReviewText] = useState("");
+//   const [reviews, setReviews] = useState([]);
 
-  const handleReviewSubmit = () => {
-    if (reviewText.trim() === "") return;
-    const newReview = { text: reviewText, date: new Date().toLocaleDateString() };
-    setReviews([...reviews, newReview]);
-    setReviewText("");
-  };
-
-  return (
-    <div className="mt-4">
-      <h2 className="text-xl font-semibold mb-2">Write a Review</h2>
-      <div className="space-y-2">
-        {reviews.map((review, index) => (
-          <div key={index} className="bg-gray-100 p-2 rounded">
-            <p>{review.text}</p>
-            <p className="text-sm text-gray-500">{review.date}</p>
-          </div>
-        ))}
-      </div>
-      <div className="mt-4">
-        <textarea
-          className="w-full px-3 py-2 border rounded"
-          placeholder="Write your review..."
-          value={reviewText}
-          onChange={(e) => setReviewText(e.target.value)}
-        ></textarea>
-      </div>
-    </div>
-  );
-};
+//   return (
+//     <div className="mt-4">
+//       <h2 className="text-xl font-semibold mb-2">Write a Review</h2>
+//       <div className="mt-4">
+//         <textarea
+//           className="w-full px-3 py-2 border rounded text-black"
+//           placeholder="Write your review..."
+//           value={reviewText}
+//           onChange={(e) => setReviewText(e.target.value)}
+//         ></textarea>
+//       </div>
+//     </div>
+//   );
+// };
 

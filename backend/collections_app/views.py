@@ -68,7 +68,6 @@ class Collection_Management(User_permissions):
         # print(game_status)
         collection_game = Collection(app_user=request.user, game=game_id, game_status=game_status)
 
-        # if collection_game.set_status(game_status):
         collection_game.save()
 
         new_collection_game = CollectionSerializer(collection_game)
