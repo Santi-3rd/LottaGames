@@ -2,7 +2,7 @@ import { useParams, useNavigate} from "react-router-dom";
 import {useContext, useEffect, useState } from "react";
 import { api } from "../utilities.jsx"
 import { userContext } from "../App";
-import { Reviews } from "../components/Reviews.jsx";
+// import { Reviews } from "../components/Reviews.jsx";
 
 
 
@@ -26,8 +26,6 @@ export const Games = () => {
         //ping api for games within the backlog and collection
         const backlog_response = await api.get("v1/backlog/");
         const collection_response = await api.get("v1/collection/");
-        console.log(backlog_response.data)
-        console.log(collection_response.data)
 
         //checks if the gameId is within the backlog's data
         const isGameInBacklog = backlog_response.data.some(item => parseInt(item.game) === parseInt(gameId));
