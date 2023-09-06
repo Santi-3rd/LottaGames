@@ -23,10 +23,17 @@ class Review_Management(APIView):
         else:
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
         
-    def get(self, request):
-        reviewed_games = Reviews.objects.filter(app_user=request.user)
-        review_data = ReviewSerializer(reviewed_games, many=True).data
-        return Response(review_data)
+    def get(self, request, game_id=None):
+        if game_id is not None:
+            # Retrieve all reviews for the specific game
+            game_reviews = Reviews.objects.filter(game_id=game_id)
+            review_data = ReviewSerializer(game_reviews, many=True).data
+            return Response(review_data, status=HTTP_200_OK)
+        else:
+            # If no game_id is provided, return reviews for the authenticated user
+            reviewed_games = Reviews.objects.filter(app_user=request.user)
+            review_data = ReviewSerializer(reviewed_games, many=True).data
+            return Response(review_data, status=HTTP_200_OK)
 
 
     def put(self, request, game_id):

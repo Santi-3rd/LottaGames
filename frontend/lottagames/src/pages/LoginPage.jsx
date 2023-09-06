@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { userContext } from "../App";
 import { useNavigate } from "react-router-dom";
 import { api } from "../utilities.jsx";
+import { Welcome } from "../components/Welcome";
 
 export const LoginPage = () => {
   const [userName, setUserName] = useState("");
@@ -28,6 +29,7 @@ export const LoginPage = () => {
 
 
   return (
+
     <form className="h-screen flex flex-col justify-center items-center gap-2" onSubmit={(e) => logIn(e)}>
       <h5>Log In</h5>
       <input className="border-[4px] border-x-black border-y-black text-black"

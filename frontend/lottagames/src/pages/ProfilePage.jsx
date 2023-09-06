@@ -6,7 +6,9 @@ import { ListedGame } from "../components/ListedGame";
 
 export const ProfilePage = () => {
   const { user, setUser, games, setGames } = useContext(userContext);
+  const [activeList, setActiveList] = useState("currentlyPlaying");
   const [filteredGames, setFilteredGames] = useState(null)
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   
   const whoAmI = async() => {
@@ -25,8 +27,10 @@ export const ProfilePage = () => {
 
   useEffect(() => {
     // Fetch data from the API
+
     api.get('v1/collection/')
       .then(response => {
+
         // Filter the games that have game_status as 'currently_playing'
         const filteredGames = response.data.filter(item => item.game_status === 'currently_playing');
         setFilteredGames(filteredGames); // Update the filteredGames state
@@ -55,15 +59,17 @@ export const ProfilePage = () => {
             console.error('Error fetching game data:', error);
           });
       })
+
       .catch(error => {
         console.error('Error fetching data:', error);
       });
-  
+    
     whoAmI();
   }, []);
 
   //SHOWS BACKLOG
   const showBacklog = async () => {
+    setLoading(true);
     try {
       const backlog_response = await api.get("v1/backlog/");
   
@@ -77,7 +83,8 @@ export const ProfilePage = () => {
   
       // Flatten the array of game data objects
       const allGamesData = gameDataArray.flatMap((gameData) => gameData.games);
-  
+      
+      setLoading(false);
       setGames(allGamesData);
     } catch (error) {
       console.error(error);
@@ -86,6 +93,7 @@ export const ProfilePage = () => {
 
   //SHOWS COLLECTION
   const showCollection = async () => {
+    setLoading(true);
     try {
       const collection_response = await api.get("v1/collection/");
   
@@ -99,7 +107,8 @@ export const ProfilePage = () => {
   
       // Flatten the array of game data objects
       const allGamesData = gameDataArray.flatMap((gameData) => gameData.games);
-  
+      
+      setLoading(false);
       setGames(allGamesData);
     } catch (error) {
       console.error(error);
@@ -107,6 +116,7 @@ export const ProfilePage = () => {
   };
 
   const showCurrentlyPlaying = async (filteredGames) => {
+    setLoading(true);
     try {
       const gamePromises = filteredGames.map(async (game) => {
         const gameId = game.game;
@@ -119,6 +129,7 @@ export const ProfilePage = () => {
       // Flatten the array of game data objects
       const allGamesData = gameDataArray.flatMap((gameData) => gameData.games);
 
+      setLoading(false);
       setGames(allGamesData);
     } catch (error) {
       console.error(error);
@@ -143,20 +154,26 @@ export const ProfilePage = () => {
         </div>
       </div>
       <div className="bg-gray-800 w-full flex justify-center mt-8 space-x-4 bg">
-        <p className="hover:underline cursor-pointer">
-          <span onClick={showCollection}>Collection</span>
-        </p>
-        <p className="hover:underline cursor-pointer">
-        <span onClick={() => showCurrentlyPlaying(filteredGames)}>Currently Playing</span>
-        </p>
-        <p className="hover:underline cursor-pointer">
-          <span onClick={showBacklog}>Backlog</span>
-        </p>
+      <p className={`hover:underline cursor-pointer ${activeList === "collection" ? "text-blue-500" : "text-gray-400"}`}>
+        <span onClick={() => { setActiveList("collection"); showCollection(); }}>Collection</span>
+      </p>
+      <p className={`hover:underline cursor-pointer ${activeList === "currentlyPlaying" ? "text-blue-500" : "text-gray-400"}`}>
+      <span onClick={() => { setActiveList("currentlyPlaying"); showCurrentlyPlaying(filteredGames); }}>Currently Playing</span>
+      </p>
+      <p className={`hover:underline cursor-pointer ${activeList === "backlog" ? "text-blue-500" : "text-gray-400"}`}>
+        <span onClick={() => { setActiveList("backlog"); showBacklog(); }}>Backlog</span>
+      </p>
       </div>
+      <div>
+      {loading ? (
+      <p>Loading...</p>
+      ) : ( 
       <div className="flex flex-col space-y-4 mt-3">
         {games.map((game, index) => (
           <ListedGame key={index} game={game} />
         ))}
+        </div>
+      )}
       </div>
     </div>
   );

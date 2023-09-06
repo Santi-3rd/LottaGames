@@ -34,7 +34,7 @@ class IGDB(APIView):
         }
 
         # Customize your query here
-        game_query = f'fields name, cover.url, involved_companies.company.name, age_ratings.rating_cover_url, genres.name, platforms.name, first_release_date, videos.video_id, rating, summary, storyline, websites.url; where id = {id_Query};'
+        game_query = f'fields name, cover.url, involved_companies.company.name, involved_companies.developer, age_ratings.rating_cover_url, genres.name, platforms.name, first_release_date, videos.video_id, rating, summary, storyline, websites.url, screenshots.url, rating; where id = {id_Query};'
 
         games_response = requests.post(igdb_games_endpoint, headers=headers, data=game_query)
         games_data = games_response.json() 
