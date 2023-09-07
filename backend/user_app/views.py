@@ -45,6 +45,7 @@ class Info(APIView):
 
     def get(self, request):
         return Response({"email": request.user.email, "name":request.user.name})
+    
 
 
 class Log_out(APIView):
@@ -54,3 +55,16 @@ class Log_out(APIView):
     def post(self, request):
         request.user.auth_token.delete()
         return Response(status=HTTP_204_NO_CONTENT)
+    
+class UserName(APIView):
+    def get(self, request, user_id=None):
+
+        if user_id is not None:
+            try:
+                user = App_user.objects.get(id=user_id)
+                name = user.name
+                return Response({"name": name}, status=HTTP_200_OK)
+            except App_user.DoesNotExist:
+                return Response("User not found", status=HTTP_400_BAD_REQUEST)
+        else:
+            return Response("User ID not provided", status=HTTP_400_BAD_REQUEST)

@@ -144,7 +144,7 @@ export const ProfilePage = () => {
       <div className="flex items-center mt-8">
         <div className="rounded-full overflow-hidden border-2 border-gray-300 w-20 h-20">
           <img
-            src="https://imgix.bustle.com/inverse/7c/d8/11/b6/1be8/4b09/a0b5/914dca4399eb/a-gollum-game-is-coming.jpeg?w=920&h=560&fit=crop&crop=faces&auto=format%2Ccompress"
+            src="https://icon-library.com/images/no-user-image-icon/no-user-image-icon-3.jpg"
             alt="Profile"
             className="w-full h-full object-cover"
           />
