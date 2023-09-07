@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { userContext } from "../App";
 import { api } from "../utilities.jsx";
 import { useNavigate } from "react-router-dom";
+import { Welcome } from "../components/Welcome";
 
 export const RegisterPage = () => {
   const [userName, setUserName] = useState("");
@@ -31,7 +32,9 @@ export const RegisterPage = () => {
   };
 
   return ( 
-    <form className="h-screen flex flex-col justify-center items-center gap-2" onSubmit={(e) => signUp(e)}>
+    <div>
+      <Welcome />
+    <form className="mt-20 flex flex-col justify-center items-center gap-2" onSubmit={(e) => signUp(e)}>
       <h5>Sign Up</h5>
       <input className="border-[4px] border-x-black border-y-black text-black"
         type="email"
@@ -54,5 +57,6 @@ export const RegisterPage = () => {
       />
       <input className="bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold py-1 px-2 rounded focus:outline-none focus:ring focus:border-blue-300" type="submit" />
     </form>
+    </div>
   );
 };

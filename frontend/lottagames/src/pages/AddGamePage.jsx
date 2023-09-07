@@ -106,10 +106,13 @@ export const AddGame = () => {
 return (
 
     <div>
-        <h1>{games[0].name}</h1>
-
-        <img src={games[0].cover?.url} alt={games.name}/>
-        <select className="text-black"
+      <div className=" p-4 bg-slate-600 ">
+        <h1 className=" flex justify-center text-2xl font-bold">{games[0].name}</h1>
+        <div className="flex justify-center">
+        <img src={games[0].cover.url.replace("/t_thumb/", "/t_cover_big/")} alt={games.name}/>
+        </div>
+        <div className="flex justify-center ">
+          <select className="text-black  rounded mt-3"
             value={selectedStatus}
             onChange={(e) => handleStatusChange(e.target.value)}
           >
@@ -118,17 +121,20 @@ return (
             <option value="completed">Completed</option>
             <option value="dropped">Dropped</option>
           </select>
+          </div>
+        </div>
         <div className="mt-4">
-      <h2 className="text-xl font-semibold mb-2">Write a Review</h2>
-      <div className="mt-4">
+      <h2 className="text-xl font-semibold mb-2 flex justify-center">Write a Review</h2>
+      <div className="mt-4 flex justify-center">
         <textarea
-          className="w-full px-3 py-2 border rounded text-black"
+          className="w-full max-w-md px-3 py-2 border rounded text-black text-sm"
           placeholder="Write your review..."
           value={reviewText}
           onChange={(e) => setReviewText(e.target.value)}
         ></textarea>
       </div>
     </div>
+        <div className="mt-4 flex justify-center">
           <button
           className="bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold py-1 px-1 rounded focus:outline-none focus:ring focus:border-blue-300"
           onClick={() => {
@@ -141,11 +147,16 @@ return (
             {isGameInCollection && (
               <button
             className="bg-red-500 hover:bg-red-600 text-white text-sm font-semibold py-1 px-1 rounded focus:outline-none focus:ring focus:border-blue-300"
-            onClick={handleRemove}
+            onClick={() => {
+              handleRemove();
+              navigate(`/games/${gameId}`);
+            }}
           >
             Remove
               </button>
-    )}
+      
+          )}
+        </div>
   </div>
     )
 }
