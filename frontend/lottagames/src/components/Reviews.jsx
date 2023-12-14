@@ -13,7 +13,7 @@ export const Reviews = () => {
       try {
         const review_response = await api.get(`v1/reviews/${gameId}/`);
         setReviews(review_response.data); // Assuming the API response is directly the array of review objects
-        console.log(review_response.data)
+        
 
         const updatedReviews = await Promise.all(
           review_response.data.map(async (review) => {
@@ -21,7 +21,7 @@ export const Reviews = () => {
   
             // Extract the user name from the response
             const userName = username_response.data.name;
-            console.log(userName)
+            
   
             return {
               ...review,
@@ -31,7 +31,6 @@ export const Reviews = () => {
         );;
 
         setReviews(updatedReviews);
-        console.log(reviews[0].app_user)
         
       } catch (error) {
         console.error(error);
