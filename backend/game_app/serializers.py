@@ -5,4 +5,4 @@ class GameSerializer(ModelSerializer):
 
     class Meta:
         model = Game
-        fields = ['game_id']
+        fields = ['game_id', 'reviews']
