@@ -6,6 +6,5 @@ from django.utils import timezone
 
 class Reviews(models.Model):
     app_user = models.ForeignKey(App_user, on_delete=models.CASCADE, related_name="reviews")
-    game_id = models.ForeignKey(Collection, on_delete=models.CASCADE, related_name="reviews",blank=True, null=True)
     review_text = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
