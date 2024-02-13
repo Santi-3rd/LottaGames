@@ -30,8 +30,7 @@ class Log_in(APIView):
 
 class Register(APIView):
     def post(self, request):
-        request.data["username"] = request.data["email"]
-        request.data["name"] = request.data["name"]
+        request.data["username"] = request.data["name"]
         user = App_user.objects.create_user(**request.data)
         token = Token.objects.create(user=user)
         return Response(
