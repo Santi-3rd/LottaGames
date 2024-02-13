@@ -8,23 +8,27 @@ from .serializers import ReviewSerializer
 class Review_Management(APIView):
     
     def post(self, request):
-        user = request.user  # Get the user's primary key
-        game_id = request.data.get("game_id")
+        print(request.user)
+        user = request.user.pk  # Get the user's primary key
+        game_id = int(request.data.get("game_id"))
         review_text = request.data.get("review_text")
 
         request_data = {
-            "user": user.pk,
+            "user": user,
             "game_id": game_id,
-            "review_text": review_text
+            "review_text": review_text,
         }
 
-        serializer = ReviewSerializer(data=request.data)
+        print(request_data)
+        serializer = ReviewSerializer(data=request_data)
+        print(serializer)
 
         if serializer.is_valid():
             # If the data is valid, save the review
             serializer.save()
             return Response(serializer.data, status=HTTP_201_CREATED)
         else:
+            print(serializer.errors)
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
         
     def get(self, request, game_id=None):
