@@ -32,10 +32,8 @@ export const AddGame = () => {
 
         //checks if the gameId and userId are in the review's data
         const review_response = await api.get("v1/reviews/");
-        // console.log(review_response.data); // Log the entire response data
 
         const isGameReviewed = review_response.data.some(item => parseInt(item.game_id) === parseInt(gameId));
-        console.log(isGameReviewed); // Log the value of isGameReviewed
         setIsGameReviewed(isGameReviewed)
 
       } catch (error) {
@@ -55,7 +53,6 @@ export const AddGame = () => {
   const handleSubmit = async () => {
         try {
             await api.post("v1/collection/add/", { game_id : gameId, gameStatus: selectedStatus});
-            // await api.post("v1/reviews/add/", { review_text: reviewText, game_id: gameId});
 
             //Checks if the game is in the backlog
             const backlog_response = await api.get("v1/backlog/");
@@ -152,7 +149,7 @@ return (
               navigate(`/games/${gameId}`);
             }}
           >
-            Remove
+            Delete Game
               </button>
       
           )}

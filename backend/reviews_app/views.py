@@ -1,6 +1,7 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_200_OK, HTTP_404_NOT_FOUND
+from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT
 from .models import Review
 from .serializers import ReviewSerializer
 
@@ -62,6 +63,9 @@ class Review_Management(APIView):
         except Review.DoesNotExist:
             return Response({"detail": "Review not found"}, status=HTTP_404_NOT_FOUND)
         
-    
+    def delete(self, request, game_id):
+        review = get_object_or_404(Review, user=request.user, game_id=game_id)
+        review.delete()
+        return Response(status=HTTP_204_NO_CONTENT)
     
     
