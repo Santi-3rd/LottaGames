@@ -23,7 +23,7 @@ export const Reviews = () => {
             
             return {
               ...review,
-              app_user: userName, // Assign the user name to app_user in the review
+              user: userName, // Assign the user name to app_user in the review
             };
           })
         );;
@@ -50,7 +50,7 @@ export const Reviews = () => {
                 alt="Profile Picture"
                 className="w-7 h-7 rounded-full object-cover"
               />
-              <h2 className="text-md font-semibold mb-2 ml-3 flex ">{review.app_user}</h2>
+              <h2 className="text-md font-semibold mb-2 ml-3 flex ">{review.user}</h2>
             </div>
               
             <p className="text-xs flex ml-10">{review.review_text}</p>
