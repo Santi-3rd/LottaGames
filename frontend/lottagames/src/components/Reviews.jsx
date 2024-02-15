@@ -12,17 +12,15 @@ export const Reviews = () => {
       // Updates the review
       try {
         const review_response = await api.get(`v1/reviews/${gameId}/`);
-        setReviews(review_response.data); // Assuming the API response is directly the array of review objects
-        
+        setReviews(review_response.data); 
 
         const updatedReviews = await Promise.all(
           review_response.data.map(async (review) => {
-            const username_response = await api.get(`users/${review.app_user}/`);
-  
+            const username_response = await api.get(`users/${review.user}/`);
+            
             // Extract the user name from the response
             const userName = username_response.data.name;
             
-  
             return {
               ...review,
               app_user: userName, // Assign the user name to app_user in the review
@@ -38,6 +36,7 @@ export const Reviews = () => {
     };
     fetchData();
   }, [gameId]);
+
 
   return (
     <div className="mt-4 mx-auto max-w-md"> {/* Center the content and limit width */}

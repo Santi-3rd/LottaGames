@@ -19,8 +19,10 @@ from django.http import HttpResponse
 
 class Log_in(APIView):
     def post(self, request):
-        request.data["username"] = request.data["email"]
-        user = authenticate(**request.data)
+        email = request.data.get('email')
+        password = request.data.get('password')
+        print(request.data)
+        user = authenticate(request, email=email, password=password)
         if user:
             token, created = Token.objects.get_or_create(user=user)
             return Response({"user": {"email": user.email}, "token": token.key})
@@ -57,7 +59,7 @@ class Log_out(APIView):
     
 class UserName(APIView):
     def get(self, request, user_id=None):
-
+        print(user_id)
         if user_id is not None:
             try:
                 user = App_user.objects.get(id=user_id)
