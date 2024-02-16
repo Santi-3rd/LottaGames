@@ -1,9 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../utilities.jsx";
+import { userContext } from "../App";
 
 export const Reviews = () => {
   const { gameId } = useParams();
+  const [gameStatus, setGameStatus] = useState()
   const [reviews, setReviews] = useState([]);
  
 
@@ -17,13 +19,20 @@ export const Reviews = () => {
         const updatedReviews = await Promise.all(
           review_response.data.map(async (review) => {
             const username_response = await api.get(`users/${review.user}/`);
+
+            const collection_response = await api.get(`v1/collection/?user_id=${review.user}&game_id=${gameId}`);
+            console.log(collection_response.data.game_status)
             
             // Extract the user name from the response
             const userName = username_response.data.name;
+
+            // Extract the game status from the response
+            const gameStatus = collection_response.data.game_status;
             
             return {
               ...review,
-              user: userName, // Assign the user name to app_user in the review
+              user: userName, // Assign the user name to user in the review
+              game_status: gameStatus,
             };
           })
         );;
@@ -37,6 +46,7 @@ export const Reviews = () => {
     fetchData();
   }, [gameId]);
 
+  
 
   return (
     <div className="mt-4 mx-auto max-w-md"> {/* Center the content and limit width */}
@@ -52,7 +62,7 @@ export const Reviews = () => {
               />
               <h2 className="text-md font-semibold mb-2 ml-3 flex ">{review.user}</h2>
             </div>
-              
+            <p>{review.game_status}</p> 
             <p className="text-xs flex ml-10">{review.review_text}</p>
           </div>
         ))}
