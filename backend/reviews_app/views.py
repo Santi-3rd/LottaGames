@@ -4,25 +4,29 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT
 from .models import Review
 from .serializers import ReviewSerializer
+from collections_app.models import Collection
 
 
 class Review_Management(APIView):
     
     def post(self, request):
-        print(request.user)
         user = request.user.pk  # Get the user's primary key
         game_id = int(request.data.get("game_id"))
         review_text = request.data.get("review_text")
+        game_status = request.data.get("game_status")
+
+        # Get the Collection instance that matches the game_status string
+        game_status = get_object_or_404(Collection, game_status=game_status)
+        print(game_status)
 
         request_data = {
             "user": user,
             "game_id": game_id,
             "review_text": review_text,
+            "game_status" : game_status
         }
 
-        print(request_data)
         serializer = ReviewSerializer(data=request_data)
-        print(serializer)
 
         if serializer.is_valid():
             # If the data is valid, save the review

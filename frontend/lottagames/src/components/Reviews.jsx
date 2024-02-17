@@ -10,41 +10,37 @@ export const Reviews = () => {
  
 
   useEffect(() => {
-    const fetchData = async () => {
-      // Updates the review
-      try {
-        const review_response = await api.get(`v1/reviews/${gameId}/`);
-        setReviews(review_response.data); 
+  const fetchData = async () => {
+    try {
+      const review_response = await api.get(`v1/reviews/${gameId}/`);
+      setReviews(review_response.data);
 
-        const updatedReviews = await Promise.all(
-          review_response.data.map(async (review) => {
-            const username_response = await api.get(`users/${review.user}/`);
+      const updatedReviews = [];
 
-            const collection_response = await api.get(`v1/collection/?user_id=${review.user}&game_id=${gameId}`);
-            console.log(collection_response.data)
-            
-            // Extract the user name from the response
-            const userName = username_response.data.name;
+      for (const review of review_response.data) {
+        const username_response = await api.get(`users/${review.user}/`);
+        const collection_response = await api.get(`v1/collection/?user_id=${review.user}&game_id=${gameId}`);
 
-            // Extract the game status from the response
-            const gameStatus = collection_response.data.game_status;
-            
-            return {
-              ...review,
-              user: userName, // Assign the user name to user in the review
-              game_status: gameStatus,
-            };
-          })
-        );;
+        const userName = username_response.data.name;
+        const gameStatus = collection_response.data.game_status;
 
-        setReviews(updatedReviews);
-        
-      } catch (error) {
-        console.error(error);
+        updatedReviews.push({
+          ...review,
+          user: userName,
+          game_status: gameStatus,
+        });
       }
-    };
-    fetchData();
-  }, [gameId]);
+
+      console.log(updatedReviews)
+
+      setReviews(updatedReviews);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  fetchData();
+}, [gameId]);
 
   
 
