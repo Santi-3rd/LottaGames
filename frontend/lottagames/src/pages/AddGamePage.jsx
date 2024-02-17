@@ -5,7 +5,7 @@ import { userContext } from "../App";
 
 export const AddGame = () => {
     const { gameId } = useParams();
-    const { games, setGames } = useContext(userContext);
+    const { user, games, setGames } = useContext(userContext);
     const [isGameInBacklog, setIsGameInBacklog] = useState(null);
     const [isGameInCollection, setIsGameInCollection] = useState(null);
     const [isGameReviewed, setIsGameReviewed] = useState(null);
@@ -19,7 +19,7 @@ export const AddGame = () => {
       try {
         const response = await api.post("v1/games/", { idQuery: gameId });
         setGames(response.data.games);
-        console.log(games)
+        // console.log(games)
 
         //checks if the gameId is within the collections's data
         // const collection_response = await api.get("v1/collection/");
@@ -77,7 +77,9 @@ const handleSubmit = async () => {
       // Get the current user's review for the game
       const review_response = await api.get(`v1/reviews/${gameId}/`);
       console.log(review_response.data)
-      const userReview = review_response.data.find(item => item.user === currentUser);
+
+      const userReview = review_response.data.find(item => item.user === 2);
+      console.log(userReview)
 
       if (userReview) {
         await api.put(`v1/reviews/update/${gameId}/`, { review_text: reviewText });
