@@ -89,16 +89,13 @@ class Collection_Management(User_permissions):
         try:
             # Retrieve the existing record from the database
             collection_game = Collection.objects.get(game=game, app_user=request.user)
-            print(collection_game)
 
             # Update the game_status field
             game_status = request.data.get("gameStatus")
             collection_game.game_status = game_status
 
-            # Save the changes
             collection_game.save()
-
-            # Serialize and return the updated game
+            
             updated_game = CollectionSerializer(collection_game)
             return Response(updated_game.data, HTTP_200_OK)
 

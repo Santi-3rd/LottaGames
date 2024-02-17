@@ -2,7 +2,6 @@ import { useParams, useNavigate} from "react-router-dom";
 import {useContext, useEffect, useState } from "react";
 import { api } from "../utilities.jsx"
 import { userContext } from "../App";
-// import { Reviews } from "../components/Reviews.jsx";
 
 export const AddGame = () => {
     const { gameId } = useParams();
@@ -17,17 +16,15 @@ export const AddGame = () => {
 //pings api for all the game info the user needs
   useEffect(() => {        
     const fetchData = async () => {
-
       try {
-
         const response = await api.post("v1/games/", { idQuery: gameId });
         setGames(response.data.games);
         console.log(games)
 
         //checks if the gameId is within the collections's data
-        const collection_response = await api.get("v1/collection/");
-        const isGameInCollection = collection_response.data.some(item => parseInt(item.game) === parseInt(gameId));
-        setIsGameInCollection(isGameInCollection);
+        // const collection_response = await api.get("v1/collection/");
+        // const isGameInCollection = collection_response.data.some(item => parseInt(item.game) === parseInt(gameId));
+        // setIsGameInCollection(isGameInCollection);
 
 
         //checks if the gameId and userId are in the review's data
@@ -45,59 +42,65 @@ export const AddGame = () => {
 }, [gameId]);
 
 
-  const handleStatusChange = (status) => {
-    setSelectedStatus(status);
-  };
+const handleStatusChange = (status) => {
+  setSelectedStatus(status);
+};
 
 
-  const handleSubmit = async () => {
-        try {
-            await api.post("v1/collection/add/", { game_id : gameId, gameStatus: selectedStatus});
+const handleSubmit = async () => {
+  try {
+    const collection_response = await api.get("v1/collection/");
+    const isGameInCollection = collection_response.data.some(item => parseInt(item.game) === parseInt(gameId));
+    setIsGameInCollection(isGameInCollection);
 
-            //Checks if the game is in the backlog
-            const backlog_response = await api.get("v1/backlog/");
-            const isGameInBacklog = backlog_response.data.some(item => parseInt(item.game) === parseInt(gameId));
-            setIsGameInBacklog(isGameInBacklog);
+    //Checks if the game is in the backlog
+    const backlog_response = await api.get("v1/backlog/");
+    const isGameInBacklog = backlog_response.data.some(item => parseInt(item.game) === parseInt(gameId));
+    setIsGameInBacklog(isGameInBacklog);
 
-            //Removes the game if it's in the backlog
-            if (isGameInBacklog) {
-              await api.delete(`v1/backlog/remove/${gameId}/`, { game_id: gameId });
-              setIsGameInBacklog(!isGameInBacklog);
-            }
-
-            //Updates the game's status
-            if (isGameInCollection) {
-              await api.put(`v1/collection/update/${gameId}/`, { gameStatus: selectedStatus });
-              setIsGameInBacklog(isGameInBacklog)
-            }
-
-            //Updates the review
-            if (!isGameReviewed) {
-              await api.post("v1/reviews/add/", { review_text: reviewText, game_id: gameId});
-            }else{
-              await api.put(`v1/reviews/update/${gameId}/`, { review_text: reviewText });
-              setIsGameReviewed(isGameReviewed)
-            }
-      
-          
-      
-        } catch (error) {
-          console.error(error);
-        }
-  };
-
-  const handleRemove = async () => {
-    try {
-        await api.delete(`v1/collection/remove/${gameId}/`, { game_id: gameId });
-  
-      // Update the state after the action
-      setIsGameInCollection(!isGameInCollection);
-  
-    } catch (error) {
-      console.error(error);
+      //Removes the game if it's in the backlog
+    if (isGameInBacklog) {
+      await api.delete(`v1/backlog/remove/${gameId}/`, { game_id: gameId });
+      setIsGameInBacklog(!isGameInBacklog);
     }
 
+      //Updates the game's status
+    if (isGameInCollection) {
+      await api.put(`v1/collection/update/${gameId}/`, { gameStatus: selectedStatus });
+      setIsGameInBacklog(isGameInBacklog)
+    }
+
+    //Updates the review
+    if (!isGameReviewed) {
+      await api.post("v1/reviews/add/", { review_text: reviewText, game_id: gameId});
+    }else{
+      // Get the current user's review for the game
+      const review_response = await api.get(`v1/reviews/${gameId}/`);
+      console.log(review_response.data)
+      const userReview = review_response.data.find(item => item.user === currentUser);
+
+      if (userReview) {
+        await api.put(`v1/reviews/update/${gameId}/`, { review_text: reviewText });
+        setIsGameReviewed(isGameReviewed)
+      }
+    }
+  } catch (error) {
+    console.error(error);
   }
+};
+
+const handleRemove = async () => {
+  try {
+      await api.delete(`v1/collection/remove/${gameId}/`, { game_id: gameId });
+
+    // Update the state after the action
+    setIsGameInCollection(!isGameInCollection);
+
+  } catch (error) {
+    console.error(error);
+  }
+
+}
 
 
 return (
