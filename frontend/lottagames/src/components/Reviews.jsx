@@ -21,7 +21,7 @@ export const Reviews = () => {
             const username_response = await api.get(`users/${review.user}/`);
 
             const collection_response = await api.get(`v1/collection/?user_id=${review.user}&game_id=${gameId}`);
-            console.log(collection_response.data.game_status)
+            console.log(collection_response.data)
             
             // Extract the user name from the response
             const userName = username_response.data.name;
