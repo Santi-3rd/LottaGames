@@ -24,6 +24,7 @@ export const AddGame = () => {
 
         const isGameReviewed = review_response.data.some(item => parseInt(item.game_id) === parseInt(gameId));
         setIsGameReviewed(isGameReviewed)
+        console.log(isGameReviewed)
 
       } catch (error) {
         console.error(error);
@@ -47,7 +48,6 @@ const handleSubmit = async () => {
     //Checks if the game is in the collection
     if (isGameInCollection) {
       await api.put(`v1/collection/update/${gameId}/`, { gameStatus: selectedStatus });
-      setIsGameInBacklog(isGameInBacklog)
     } else{
       await api.post("v1/collection/add/", { game_id : gameId, gameStatus: selectedStatus});
     }
@@ -57,7 +57,7 @@ const handleSubmit = async () => {
     const isGameInBacklog = backlog_response.data.some(item => parseInt(item.game) === parseInt(gameId));
     setIsGameInBacklog(isGameInBacklog);
 
-      //Removes the game if it's in the backlog
+    //Removes the game if it's in the backlog
     if (isGameInBacklog) {
       await api.delete(`v1/backlog/remove/${gameId}/`, { game_id: gameId });
       setIsGameInBacklog(!isGameInBacklog);
@@ -65,12 +65,15 @@ const handleSubmit = async () => {
 
     //Updates the review
     if (!isGameReviewed) {
-      await api.post('v1/reviews/add/', {review_text: reviewText, game_id: gameId});
+      await api.post('v1/reviews/add/', {review_text: reviewText, game_id: gameId, gameStatus: selectedStatus});
+      console.log("added")
     }else{
       // Get the current user's review for the game
       const review_response = await api.get(`v1/reviews/${gameId}/`);
+      console.log("not added")
 
       const userReview = review_response.data.find(item => item.user === 2);
+      console.log(userReview)
 
       if (userReview) {
         await api.put(`v1/reviews/update/${gameId}/`, { review_text: reviewText });
