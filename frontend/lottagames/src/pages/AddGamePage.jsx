@@ -19,15 +19,7 @@ export const AddGame = () => {
       try {
         const response = await api.post("v1/games/", { idQuery: gameId });
         setGames(response.data.games);
-        // console.log(games)
 
-        //checks if the gameId is within the collections's data
-        // const collection_response = await api.get("v1/collection/");
-        // const isGameInCollection = collection_response.data.some(item => parseInt(item.game) === parseInt(gameId));
-        // setIsGameInCollection(isGameInCollection);
-
-
-        //checks if the gameId and userId are in the review's data
         const review_response = await api.get("v1/reviews/");
 
         const isGameReviewed = review_response.data.some(item => parseInt(item.game_id) === parseInt(gameId));
@@ -46,12 +38,19 @@ const handleStatusChange = (status) => {
   setSelectedStatus(status);
 };
 
-
 const handleSubmit = async () => {
   try {
     const collection_response = await api.get("v1/collection/");
     const isGameInCollection = collection_response.data.some(item => parseInt(item.game) === parseInt(gameId));
     setIsGameInCollection(isGameInCollection);
+
+    //Checks if the game is in the collection
+    if (isGameInCollection) {
+      await api.put(`v1/collection/update/${gameId}/`, { gameStatus: selectedStatus });
+      setIsGameInBacklog(isGameInBacklog)
+    } else{
+      await api.post("v1/collection/add/", { game_id : gameId, gameStatus: selectedStatus});
+    }
 
     //Checks if the game is in the backlog
     const backlog_response = await api.get("v1/backlog/");
@@ -64,22 +63,14 @@ const handleSubmit = async () => {
       setIsGameInBacklog(!isGameInBacklog);
     }
 
-      //Updates the game's status
-    if (isGameInCollection) {
-      await api.put(`v1/collection/update/${gameId}/`, { gameStatus: selectedStatus });
-      setIsGameInBacklog(isGameInBacklog)
-    }
-
     //Updates the review
     if (!isGameReviewed) {
-      await api.post("v1/reviews/add/", { review_text: reviewText, game_id: gameId});
+      await api.post('v1/reviews/add/', {review_text: reviewText, game_id: gameId});
     }else{
       // Get the current user's review for the game
       const review_response = await api.get(`v1/reviews/${gameId}/`);
-      console.log(review_response.data)
 
       const userReview = review_response.data.find(item => item.user === 2);
-      console.log(userReview)
 
       if (userReview) {
         await api.put(`v1/reviews/update/${gameId}/`, { review_text: reviewText });

@@ -17,7 +17,7 @@ class Review_Management(APIView):
 
         # Get the Collection instance that matches the game_status string
         game_status = get_object_or_404(Collection, game_status=game_status)
-        print(game_status)
+        print(game_status)  
 
         request_data = {
             "user": user,
