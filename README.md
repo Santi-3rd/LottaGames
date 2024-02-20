@@ -1,6 +1,6 @@
 # LottaGames
 
-Welcome to LottaGames! This is a web application designed to help you organize your video game library, write reviews, and discover new games. Similar to Goodreads for books, LottaGames provides a platform for managing your gaming experiences.
+Welcome to LottaGames! This is a web application designed to help you organize your video game library, write reviews, and discover new games. 
 
 ## Features
 

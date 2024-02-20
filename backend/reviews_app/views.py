@@ -49,10 +49,10 @@ class Review_Management(APIView):
 
             # Update the review_text field
             review_text = request.data.get("review_text")
+            
             if review_text is not None:
                 review.review_text = review_text
                 review.save()
-                # Serialize and return the updated review
                 updated_review = ReviewSerializer(review)
                 return Response(updated_review.data, status=HTTP_200_OK)
             else:
