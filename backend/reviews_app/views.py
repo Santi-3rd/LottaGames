@@ -13,17 +13,11 @@ class Review_Management(APIView):
         user = request.user.pk  # Get the user's primary key
         game_id = int(request.data.get("game_id"))
         review_text = request.data.get("review_text")
-        game_status = request.data.get("gameStatus")
-
-        # Get the Collection instance that matches the game_status string
-        # game_status = Collection.objects.get(game_status=game_status)
-        # print(game_status)  
 
         request_data = {
             "user": user,
             "game_id": game_id,
             "review_text": review_text,
-            "game_status" : game_status
         }
 
         serializer = ReviewSerializer(data=request_data)

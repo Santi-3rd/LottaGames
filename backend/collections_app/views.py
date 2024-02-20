@@ -66,7 +66,6 @@ class Collection_Management(User_permissions):
         game_id = request.data.get("game_id")
         game_status = request.data.get("gameStatus")
         collection_game = Collection(app_user=request.user, game=game_id, game_status=game_status)
-        print(collection_game)
 
         collection_game.save()
 
@@ -76,9 +75,10 @@ class Collection_Management(User_permissions):
     def get(self, request):
         user_id = request.query_params.get('user_id')
         game_id = request.query_params.get('game_id')
+
         if user_id is not None and game_id is not None:
-            game = Collection.objects.get(app_user=request.user, game=game_id)
-            games_data = CollectionSerializer(game).data
+            games = Collection.objects.filter(app_user__in=user_id.split(','), game=game_id)
+            games_data = CollectionSerializer(games, many=True).data
         else: 
             collection_games = Collection.objects.filter(app_user=request.user)
             games_data = CollectionSerializer(collection_games, many=True).data

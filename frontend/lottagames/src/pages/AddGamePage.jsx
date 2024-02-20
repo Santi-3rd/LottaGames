@@ -30,7 +30,6 @@ export const AddGame = () => {
         console.error(error);
       }
     };
-
   fetchData();
 }, [gameId]);
 
@@ -61,24 +60,6 @@ const handleSubmit = async () => {
     if (isGameInBacklog) {
       await api.delete(`v1/backlog/remove/${gameId}/`, { game_id: gameId });
       setIsGameInBacklog(!isGameInBacklog);
-    }
-
-    //Updates the review
-    if (!isGameReviewed) {
-      await api.post('v1/reviews/add/', {review_text: reviewText, game_id: gameId, gameStatus: selectedStatus});
-      console.log("added")
-    }else{
-      // Get the current user's review for the game
-      const review_response = await api.get(`v1/reviews/${gameId}/`);
-      console.log("not added")
-
-      const userReview = review_response.data.find(item => item.user === 2);
-      console.log(userReview)
-
-      if (userReview) {
-        await api.put(`v1/reviews/update/${gameId}/`, { review_text: reviewText });
-        setIsGameReviewed(isGameReviewed)
-      }
     }
   } catch (error) {
     console.error(error);
@@ -119,18 +100,11 @@ return (
           </select>
           </div>
         </div>
-        <div className="mt-4">
-      <h2 className="text-xl font-semibold mb-2 flex justify-center">Write a Review</h2>
-      <div className="mt-4 flex justify-center">
-        <textarea
-          className="w-full max-w-md px-3 py-2 border rounded text-black text-sm"
-          placeholder="Write your review..."
-          value={reviewText}
-          onChange={(e) => setReviewText(e.target.value)}
-        ></textarea>
-      </div>
-    </div>
         <div className="mt-4 flex justify-center">
+        <button className="bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold py-1 px-1 rounded focus:outline-none focus:ring focus:border-blue-300" onClick={() => {
+            handleSubmit()
+            navigate(`/review/${gameId}`);
+          }}>Write a Review</button>
           <button
           className="bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold py-1 px-1 rounded focus:outline-none focus:ring focus:border-blue-300"
           onClick={() => {
