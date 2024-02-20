@@ -21,7 +21,6 @@ class Log_in(APIView):
     def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
-        print(request.data)
         user = authenticate(request, email=email, password=password)
         if user:
             token, created = Token.objects.get_or_create(user=user)
@@ -47,8 +46,18 @@ class Info(APIView):
     def get(self, request):
         return Response({"email": request.user.email, "name":request.user.name})
     
+class UpdateUserName(APIView):
+    def put(self, request):
+        
+        return Response({"name": request.user.name})
+    pass
 
+class UpdateEmail(APIView):
+    pass
 
+class UpdatePassword(APIView):
+    pass
+    
 class Log_out(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
