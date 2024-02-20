@@ -163,6 +163,7 @@ export const ProfilePage = () => {
       <p className={`hover:underline cursor-pointer ${activeList === "backlog" ? "text-blue-500" : "text-gray-400"}`}>
         <span onClick={() => { setActiveList("backlog"); showBacklog(); }}>Backlog</span>
       </p>
+      <p className={`hover:underline cursor-pointer ${activeList === "backlog" ? "text-blue-500" : "text-gray-400"}`}onClick={() => {navigate(`/account/`);}}>Account Settings</p>
       </div>
       <div>
       {loading ? (

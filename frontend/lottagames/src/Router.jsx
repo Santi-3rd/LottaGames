@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import { ProfilePage } from "./pages/ProfilePage"
+import { AccountPage } from "./pages/AccountPage"
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { Library } from "./pages/LibraryPage";
@@ -25,6 +26,10 @@ export const router = createBrowserRouter([
             {
                 path: "profile",
                 element:<ProfilePage/>,
+            },
+            {
+                path: "account",
+                element:<AccountPage/>,
             },
             {
                 path:"library",
