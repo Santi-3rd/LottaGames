@@ -22,6 +22,6 @@ Welcome to LottaGames! This is a web application designed to help you organize y
   - Django REST Framework: A powerful toolkit for building Web APIs in Django, used for user authentication.
   - Python
 - **API**:
-  - IGDB (Internet Game Database) API: Provides detailed information about video games.
+  - [IGDB](https://www.igdb.com/) (Internet Game Database) API: Provides detailed information about video games.
 - **Database**:
   - PostgreSQL: A powerful, open-source object-relational database system.
