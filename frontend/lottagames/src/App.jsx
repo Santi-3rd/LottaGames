@@ -49,7 +49,7 @@ const logOut = async() => {
             ?
             <>
             <Link to="/profile">Profile</Link>
-            <Link to="/library">Library</Link>
+            <Link to="/library">Games</Link>
             <button onClick={logOut}>Log out</button>
             </>
             :

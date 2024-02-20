@@ -20,6 +20,11 @@ export const AddGame = () => {
         const response = await api.post("v1/games/", { idQuery: gameId });
         setGames(response.data.games);
 
+        const collection_response = await api.get("v1/collection/");
+        const isGameInCollection = collection_response.data.some(item => parseInt(item.game) === parseInt(gameId));
+        setIsGameInCollection(isGameInCollection);
+
+
         const review_response = await api.get("v1/reviews/");
 
         const isGameReviewed = review_response.data.some(item => parseInt(item.game_id) === parseInt(gameId));
@@ -40,17 +45,12 @@ const handleStatusChange = (status) => {
 
 const handleSubmit = async () => {
   try {
-    const collection_response = await api.get("v1/collection/");
-    const isGameInCollection = collection_response.data.some(item => parseInt(item.game) === parseInt(gameId));
-    setIsGameInCollection(isGameInCollection);
-
     //Checks if the game is in the collection
     if (isGameInCollection) {
       await api.put(`v1/collection/update/${gameId}/`, { gameStatus: selectedStatus });
     } else{
       await api.post("v1/collection/add/", { game_id : gameId, gameStatus: selectedStatus});
     }
-
     //Checks if the game is in the backlog
     const backlog_response = await api.get("v1/backlog/");
     const isGameInBacklog = backlog_response.data.some(item => parseInt(item.game) === parseInt(gameId));
@@ -100,11 +100,11 @@ return (
           </select>
           </div>
         </div>
-        <div className="mt-4 flex justify-center">
+        <div className="mt-4 flex justify-center" >
         <button className="bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold py-1 px-1 rounded focus:outline-none focus:ring focus:border-blue-300" onClick={() => {
             handleSubmit()
             navigate(`/review/${gameId}`);
-          }}>Write a Review</button>
+          }}>{isGameReviewed ? "Edit Review" : "Write Review"}</button>
           <button
           className="bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold py-1 px-1 rounded focus:outline-none focus:ring focus:border-blue-300"
           onClick={() => {

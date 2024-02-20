@@ -61,8 +61,9 @@ class Review_Management(APIView):
         except Review.DoesNotExist:
             return Response({"detail": "Review not found"}, status=HTTP_404_NOT_FOUND)
         
-    def delete(self, request, game_id):
-        review = get_object_or_404(Review, user=request.user, game_id=game_id)
+    def delete(self, request, review_id):
+        review = get_object_or_404(Review, user=request.user, id=review_id)
+        print(review)
         review.delete()
         return Response(status=HTTP_204_NO_CONTENT)
     

@@ -6,8 +6,10 @@ import { userContext } from "../App";
 
 export const Review = () => {
   const navigate = useNavigate();
+  const { user } = useContext(userContext);
   const { gameId } = useParams();
   const [isGameReviewed, setIsGameReviewed] = useState(null);
+  const [reviewId, setReviewId] = useState(null)
   const [reviewText, setReviewText] = useState("");
 
   useEffect(() => {
@@ -18,13 +20,24 @@ export const Review = () => {
 
         const isGameReviewed = review_response.data.some(item => parseInt(item.game_id) === parseInt(gameId));
         setIsGameReviewed(isGameReviewed)
-        console.log(isGameReviewed)
+        
+        if (isGameReviewed) {
+          const currentUserReview = review_response.data.find(item => parseInt(item.game_id) === parseInt(gameId) && item.user_id === user.id);
+          
+          //sets review text to text box and get the id for handleRemove function
+          if (currentUserReview) {
+            setReviewId(currentUserReview.id)
+            setReviewText(currentUserReview.review_text);
+          }
+        }
+
+
       } catch (error) {
         console.error(error);
       }
       } 
       fetchData();
-    })
+    }, [])
     
   
 
@@ -38,8 +51,18 @@ export const Review = () => {
         setIsGameReviewed(isGameReviewed)
     }
   } 
+
+  const handleRemove = async () => {
+    try {
+        await api.delete(`v1/reviews/remove/${reviewId}/`);
+  
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
-        <div className="mt-4">
+    <div className="mt-4">
       <h2 className="text-xl font-semibold mb-2 flex justify-center">Write a Review</h2>
       <div className="mt-4 flex justify-center">
         <textarea
@@ -54,11 +77,17 @@ export const Review = () => {
           onClick={() => {
             handleSubmit();
             navigate(`/games/${gameId}`);
-          }}
-        >
-          Submit
-          </button>
-          </div>
+          }}>Submit</button>
+          {isGameReviewed && (
+          <button className="bg-red-500 hover:bg-red-600 text-white text-sm font-semibold py-1 px-1 rounded focus:outline-none focus:ring focus:border-blue-300"
+            onClick={() => {
+              handleRemove();
+              navigate(`/games/${gameId}`);
+            }}
+          >
+            Delete Review
+              </button>)}
+        </div>
       </div>
     </div>
   )
