@@ -20,11 +20,9 @@ export const Library = () => {
        console.log(response.data)
        setGames(response.data.games)
 
-      // Process the responseData as needed
     } catch (error) {
       console.error(error);
 
-      // Handle error if needed
     } finally {
       setLoading(false);
       setInputValue("");

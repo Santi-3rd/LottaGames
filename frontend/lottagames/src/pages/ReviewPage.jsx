@@ -38,8 +38,6 @@ export const Review = () => {
       } 
       fetchData();
     }, [])
-    
-  
 
   const handleSubmit = async () => {
       if (!isGameReviewed) { //Adds Review

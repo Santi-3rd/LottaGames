@@ -13,17 +13,16 @@ export const AddGame = () => {
     const navigate = useNavigate();
     const [reviewText, setReviewText] = useState("");
 
-//pings api for all the game info the user needs
   useEffect(() => {        
     const fetchData = async () => {
       try {
+        //pings api for game info 
         const response = await api.post("v1/games/", { idQuery: gameId });
         setGames(response.data.games);
 
         const collection_response = await api.get("v1/collection/");
         const isGameInCollection = collection_response.data.some(item => parseInt(item.game) === parseInt(gameId));
         setIsGameInCollection(isGameInCollection);
-
 
         const review_response = await api.get("v1/reviews/");
 
