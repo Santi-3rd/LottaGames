@@ -5,7 +5,7 @@ import { api } from "../utilities.jsx";
 import { Welcome } from "../components/Welcome";
 
 export const LoginPage = () => {
-  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setUser } = useContext(userContext);
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ export const LoginPage = () => {
   const logIn = async (e) => {
     e.preventDefault();
     let response = await api.post("users/login/", {
-      email: userName,
+      email: email,
       password: password,
     })
     .catch((err) => {
@@ -35,8 +35,8 @@ export const LoginPage = () => {
       <h5>Log In</h5>
       <input className="border-[4px] border-x-black border-y-black text-black"
         type="email"
-        value={userName}
-        onChange={(e) => setUserName(e.target.value)}
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         placeholder="email"
       />
       <input className="border-[4px] border-x-black border-y-black text-black"

@@ -24,7 +24,7 @@ export const Review = () => {
         if (isGameReviewed) {
           const currentUserReview = review_response.data.find(item => parseInt(item.game_id) === parseInt(gameId) && item.user_id === user.id);
           
-          //sets review text to text box and get the id for handleRemove function
+          //sets review text to text box and gets the id for handleRemove function
           if (currentUserReview) {
             setReviewId(currentUserReview.id)
             setReviewText(currentUserReview.review_text);
