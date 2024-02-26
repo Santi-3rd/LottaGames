@@ -76,7 +76,17 @@ class UpdateUserName(APIView):
         return Response({"name": request.user.name})
 
 class UpdateEmail(APIView):
-    pass
+    def put(self, request):
+
+        old_email = request.data.get('oldEmail')
+        new_email = request.data.get('newEmail')
+        user = request.user
+
+        if old_email != user.email:
+            return Response({"error": "Please provide old email"}, status=HTTP_400_BAD_REQUEST)
+
+
+        pass
 
 class UpdatePassword(APIView):
     pass

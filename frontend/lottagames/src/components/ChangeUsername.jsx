@@ -7,13 +7,10 @@ export const ChangeUsername = () => {
     const navigate = useNavigate();
     const { user, setUser } = useContext(userContext);
     const [name, setName] = useState("")
-
-    // console.log(user.name)
-    // console.log(name)
+    
 
     const handleSubmit = async () => {
         const response = await api.put('users/update_username/',{ name : name });
-        console.log(response.data)
         setUser(response.data); 
     }
 
