@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from .models import App_user
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, update_session_auth_hash
+from django.contrib.auth.hashers import check_password
+from django.contrib.auth.forms import PasswordChangeForm
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from rest_framework.authtoken.models import Token
@@ -101,7 +103,24 @@ class UpdateEmail(APIView):
         return Response({"email": request.user.email})
 
 class UpdatePassword(APIView):
-    pass
+    def put(self, request):
+
+        old_password = request.data.get('oldPassword')
+        new_password = request.data.get('newPassword')
+        user = request.user
+        print("old:" + old_password, "new:" + new_password)
+
+        if not check_password(old_password, user.password):
+            return Response({"error": "Please provide the correct old password"}, status=HTTP_400_BAD_REQUEST)
+        
+        if old_password == new_password or not new_password:
+            return Response({"error": "Please provide a new password"}, status=HTTP_400_BAD_REQUEST)
+
+        user.set_password(new_password)
+        user.save()
+        update_session_auth_hash(request, user)
+        
+        return Response({"message": "Password changed successfully"})
     
 class Log_out(APIView):
     authentication_classes = [TokenAuthentication]
