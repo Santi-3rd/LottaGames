@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from .models import App_user
 from django.contrib.auth import authenticate
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -84,9 +86,19 @@ class UpdateEmail(APIView):
 
         if old_email != user.email:
             return Response({"error": "Please provide old email"}, status=HTTP_400_BAD_REQUEST)
+        
+        if old_email == new_email:
+                return Response({"error": "Please provide a new email"}, status=HTTP_400_BAD_REQUEST)
+        
+        try:
+            validate_email(new_email)
+        except ValidationError as e:
+            return Response({"error": "Please provide a valid email"}, status=HTTP_400_BAD_REQUEST)
+        else:
+            user.email = new_email
+            user.save()
 
-
-        pass
+        return Response({"email": request.user.email})
 
 class UpdatePassword(APIView):
     pass
