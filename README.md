@@ -14,14 +14,14 @@ Welcome to LottaGames! This is a web application designed to help you organize y
 - **Frontend**:
   - HTML
   - CSS
-  - Tailwind CSS: A utility-first CSS framework for rapid UI development.
+  - Tailwind CSS
   - JavaScript
-  - React.js: A JavaScript library for building user interfaces.
+  - React.js
 - **Backend**:
-  - Django: A high-level Python web framework for backend development.
-  - Django REST Framework: A powerful toolkit for building Web APIs in Django, used for user authentication.
+  - Django
+  - Django REST Framework
   - Python
 - **API**:
-  - [IGDB](https://www.igdb.com/) (Internet Game Database) API: Provides detailed information about video games.
+  - [IGDB](https://www.igdb.com/) (Internet Game Database)
 - **Database**:
-  - PostgreSQL: A powerful, open-source object-relational database system.
+  - PostgreSQL
